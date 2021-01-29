@@ -30,13 +30,13 @@ def groupByDate(df, dateindex):
     df_group.index = pd.DatetimeIndex(df_group.index) # set index as datetimeindex
     
     # reindex to date range and fill empty rows with 0
-    df_group = df_group.reindex(dateindex) #, fill_value=0) #fill value adds zeros to empty dates, otherwise NaN
+    df_group = df_group.reindex(dateindex, fill_value=0) #fill value adds zeros to empty dates, otherwise NaN
     
     # convert Series to DataFrame and count cumulative sum to new column
     df_out = pd.Series.to_frame(df_group)
     #df_out['cumsum'] = df_out['sum'].cumsum()
     
-    return df_out;
+    return df_out
 
 # filepaths
 fp_points = r'C:\Users\Ap\Documents\ProtectedAreas\FireAlert\Madagascar\fire_Jan2012_June2020_PAs.shp'
@@ -49,10 +49,10 @@ pts = gpd.read_file(fp_points)
 polys = gpd.read_file(fp_polys)
 
 # set daterange
-daterange = pd.date_range('2012-01-20', '2020-06-30')
+daterange = pd.date_range('2012-01-20', '2020-12-31')
 
 # subset for testing
-#sel = pts.iloc[0:5000]
+sel = pts.iloc[0:5000]
 
 # filter low confidence out
 sel = pts[pts['CONFIDENCE'] != 'l']
@@ -97,7 +97,7 @@ while i < len(polys): # can use just '<' here, because indexing starts from 0, b
     
     i += 1
     print(str(i)+ '/' + str(len(polys)))
-    
+
 
 # write result as csv table
 result.to_csv(df_out, sep=';', header=True)
